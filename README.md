@@ -4,6 +4,6 @@
 
 ### How to run
 ```bash
-    npm install
-    npm run dev
+npm install
+npm run dev
 ```
