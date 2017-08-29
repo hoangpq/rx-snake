@@ -14,7 +14,7 @@ export default class Food {
 
   draw(_context) {
     _context.fillStyle = '#0ff';
-    _context.fillRect(this.x, this.y, CELL_SIZE, CELL_SIZE);
+    _context.fillRect(this.x * CELL_SIZE, this.y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
   }
 
 }

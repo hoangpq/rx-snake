@@ -13,12 +13,20 @@ export default class App extends Component {
     this.food = new Food(0, 0);
     const _rows = WIDTH / CELL_SIZE;
     const _cols = HEIGHT / CELL_SIZE;
-    const {snake, food} = this;
 
-    // init observables
+    const FOOD = {
+      x: 15, y: 15,
+    };
+
+    /**
+     * Game loop
+     */
     const ticker$ = Rx.Observable
       .interval(TICKER_INTERVAL, Rx.Scheduler.requestAnimationFrame);
 
+    /**
+     * Handle keyboard events
+     */
     const input$ = Rx.Observable
       .fromEvent(document, 'keydown', event => {
         switch (event.keyCode) {
@@ -35,39 +43,53 @@ export default class App extends Component {
       .distinctUntilChanged()
       .startWith({x: 1, y: 0});
 
+    /**
+     * Handle snake position and behaviors
+     */
     const snake$ = ticker$
       .withLatestFrom(input$)
       .map(([tick, input]) => ({
-        x: input.x * CELL_SIZE,
-        y: input.y * CELL_SIZE,
+        x: input.x, y: input.y
       }));
 
-    const food$ = Rx.Observable
-      .of({
-        x: Math.round(Math.random() * _rows),
-        y: Math.round(Math.random() * _cols),
-      })
-      .map(({x, y}) => {
-        return {
-          x: x * CELL_SIZE,
-          y: y * CELL_SIZE,
-        }
+    /**
+     * Handle food position
+     */
+    const food$ = new Rx.Subject();
+
+    function genFood(frame) {
+      const {snake, food} = frame;
+      if (snake.x === food.x && snake.y === food.y) {
+        const newFood = {
+          x: Math.round(Math.random() * _cols) - 1,
+          y: Math.round(Math.random() * _rows) - 1,
+        };
+        console.log(`Gen new food at {${newFood.x}, ${newFood.y}}`);
+        food$.next(newFood);
+      }
+    }
+
+    /**
+     * Handle game state
+     */
+    const game$ = snake$
+      .withLatestFrom(food$.startWith(FOOD), (s, f) => {
+        genFood(this);
+        return {snake: s, food: f};
       });
 
-    const game$ = Rx.Observable
-      .combineLatest(snake$, food$, (_snake, _food) => {
-
-        console.log(_food);
-
-        return {snake: _snake, food: _food};
-      });
-
+    /**
+     * Draw game
+     */
     game$.subscribe(({snake, food}) => {
-      this.cls();
-      this.snake.update(snake.x, snake.y);
-      this.snake.draw(_context);
+      // clear screen
+      this.clear();
+      // draw food
       this.food.update(food.x, food.y);
       this.food.draw(_context);
+      // draw snake
+      this.snake.update(snake.x, snake.y);
+      this.snake.draw(_context);
     });
 
   }
@@ -75,13 +97,10 @@ export default class App extends Component {
   componentDidMount() {
     const {canvas} = this;
     this.context = canvas.getContext('2d');
-    // init game
     this.init();
-    // draw game
-    this.draw();
   }
 
-  cls() {
+  clear() {
     const {context: _context} = this;
     _context.beginPath();
     _context.fillStyle = '#000';
@@ -90,18 +109,11 @@ export default class App extends Component {
     _context.fill();
   }
 
-  draw() {
-    const {context: _context, snake} = this;
-    this.cls();
-    // draw snake
-    snake.draw(_context);
-  }
-
   render() {
     const Div = styled.div`
       width: ${WIDTH}px;
       margin: 0 auto;
-      border: 1px solid grey;
+      border: 1px solid red;
     `;
     return (
       <Div>
