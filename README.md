@@ -1,3 +1,3 @@
-## Simple :snake:Snake:snake: game with RxJS and Canvas
+## Simple :snake: game with RxJS and Canvas
 
 
