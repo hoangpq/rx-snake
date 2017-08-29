@@ -4,8 +4,9 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "test": "webpack && node ./dist/bundle.js",
-    "dev": "webpack-dev-server"
+    "build": "webpack --config webpack.build.config.js --progress",
+    "dev": "webpack-dev-server",
+    "test": "python3 -m simple.http -p 9999"
   },
   "devDependencies": {
     "babel-loader": "^7.1.1",
