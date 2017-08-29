@@ -70,7 +70,6 @@ export default class App extends Component {
         x: input.x, y: input.y
       }));
 
-
     /**
      * Check collision with the wall
      * @param: {Object} frame
@@ -139,6 +138,10 @@ export default class App extends Component {
     const running$ = new Rx.Subject();
     const game$ = snake$
       .withLatestFrom(food$.startWith(FOOD), (s, f) => {
+
+        console.log(s);
+        console.log(f);
+
         // gen new position for food
         genFood(this);
         if (checkCollision(this.snake)) {
