@@ -1,4 +1,4 @@
-import {CELL_SIZE} from "./Const";
+import {CELL_SIZE} from './Const';
 
 export default class Snake {
 
@@ -10,6 +10,8 @@ export default class Snake {
   constructor(x, y) {
     this.x = x;
     this.y = y;
+    this.dx = 1;
+    this.dy = 0;
     this.data = [
       {x: x, y: y},
       {x: x - 1, y: y},
@@ -23,10 +25,28 @@ export default class Snake {
    * @param {Number} dy - Y speed
    */
   update(dx, dy) {
-    this.x += dx;
-    this.y += dy;
+    [this.dx, this.dy] = [dx, dy];
+    this.x += this.dx;
+    this.y += this.dy;
     this.data.unshift({x: this.x, y: this.y});
     this.data.pop();
+  }
+
+  /**
+   * Add new dot to snake
+   * @param {Number} x - X Position
+   * @param {Number} y - Y Position
+   */
+  addDot(x, y) {
+    this.data.unshift({x, y});
+  }
+
+  /**
+   * Get Score
+   * @returns {number}
+   */
+  getScore() {
+    return this.data.length - 3;
   }
 
   /**
