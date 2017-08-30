@@ -56,18 +56,20 @@ export default class App extends Component {
       }))
       .scan(updateSnake, SNAKE_INITIAL_OBJECT)
       .takeWhile(checkCollisionWithWall)
-      .withLatestFrom(food$.startWith(randomPosition()), (snake, food) => {
-        const dots = [...snake.dots];
-        if (checkCollisionWithFood(snake, food)) {
-          dots.unshift({x: food.x, y: food.y});
-          food$.next(randomPosition());
-        }
-        Object.assign(snake, {dots,});
-        return {
-          snake: snake,
-          food: food,
-        };
-      });
+      .withLatestFrom(
+        food$.startWith(randomPosition()),
+        (snake, food) => {
+          const dots = [...snake.dots];
+          if (checkCollisionWithFood(snake, food)) {
+            dots.unshift({x: food.x, y: food.y});
+            food$.next(randomPosition());
+          }
+          Object.assign(snake, {dots,});
+          return {
+            snake: snake,
+            food: food,
+          };
+        });
 
     snake$.subscribe((gameObj) => {
       clearScreen(this.context);
