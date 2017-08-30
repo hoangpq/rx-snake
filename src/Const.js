@@ -2,6 +2,7 @@ export const WIDTH = 400;
 export const HEIGHT = 400;
 export const CELL_SIZE = 20;
 export const TICKER_INTERVAL = 200;
+export const KEYDOWN = 'keydown';
 
 const SNAKE_X = 3;
 const SNAKE_Y = 3;

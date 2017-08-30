@@ -6,7 +6,7 @@ import {drawFood} from './Food';
 import {clearScreen} from './CanvasUtils';
 import {randomPosition, checkCollisionWithFood, checkCollisionWithWall} from './FunctionUtils';
 import {
-  WIDTH, TICKER_INTERVAL, KEYS, SNAKE_INITIAL_OBJECT
+  WIDTH, TICKER_INTERVAL, KEYS, SNAKE_INITIAL_OBJECT, KEYDOWN
 } from './Const';
 
 export default class App extends Component {
@@ -23,13 +23,9 @@ export default class App extends Component {
      * Handle keyboard events
      */
     const input$ = Rx.Observable
-      .fromEvent(document, 'keydown')
-      .map(event => {
-        return event.keyCode;
-      })
-      .scan((acc, curr) => {
-        return Math.abs(acc - curr) === 2 ? acc : curr;
-      })
+      .fromEvent(document, KEYDOWN)
+      .map(event => event.keyCode)
+      .scan((acc, curr) => Math.abs(acc - curr) === 2 ? acc : curr)
       .map(keyCode => {
         switch (keyCode) {
           case KEYS.UP:
