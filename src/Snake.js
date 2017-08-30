@@ -1,68 +1,24 @@
 import {CELL_SIZE} from './Const';
 
-export default class Snake {
+export function updateSnake(acc, curr) {
+  const newPos = {x: acc.x + curr.x, y: acc.y + curr.y,};
+  let dots = [...acc.dots];
+  dots.unshift({x: newPos.x, y: newPos.y,});
+  dots.pop();
+  // set new position
+  return {x: newPos.x, y: newPos.y, dots};
+}
 
-  /**
-   * Constructor
-   * @param {Number} x - X position
-   * @param {Number} y - Y position
-   */
-  constructor(x, y) {
-    this.x = x;
-    this.y = y;
-    this.dx = 1;
-    this.dy = 0;
-    this.data = [
-      {x: x, y: y},
-      {x: x - 1, y: y},
-      {x: x - 2, y: y}
-    ];
+export function drawSnake(_context, dots) {
+  _context.fillStyle = '#f00';
+  _context.save();
+  for (let i = 0; i < dots.length; i++) {
+    _context.fillRect(
+      dots[i].x * CELL_SIZE,
+      dots[i].y * CELL_SIZE,
+      CELL_SIZE,
+      CELL_SIZE
+    );
   }
-
-  /**
-   * Update snake position
-   * @param {Number} dx - X speed
-   * @param {Number} dy - Y speed
-   */
-  update(dx, dy) {
-    [this.dx, this.dy] = [dx, dy];
-    this.x += this.dx;
-    this.y += this.dy;
-    this.data.unshift({x: this.x, y: this.y});
-    this.data.pop();
-  }
-
-  /**
-   * Add new dot to snake
-   * @param {Number} x - X Position
-   * @param {Number} y - Y Position
-   */
-  addDot(x, y) {
-    this.data.unshift({x, y});
-  }
-
-  /**
-   * Get Score
-   * @returns {number}
-   */
-  getScore() {
-    return this.data.length - 3;
-  }
-
-  /**
-   * Draw snake
-   * @param {Object} _context - Canvas context
-   */
-  draw(_context) {
-    _context.fillStyle = '#f00';
-    for (let i = 0; i < this.data.length; i++) {
-      _context.fillRect(
-        this.data[i].x * CELL_SIZE,
-        this.data[i].y * CELL_SIZE,
-        CELL_SIZE,
-        CELL_SIZE
-      );
-    }
-  }
-
+  _context.restore();
 }
