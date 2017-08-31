@@ -24,8 +24,10 @@ export default class App extends Component {
      */
     const input$ = Rx.Observable
       .fromEvent(document, KEYDOWN)
-      .map(event => event.keyCode)
-      .scan((acc, curr) => Math.abs(acc - curr) === 2 ? acc : curr)
+      .pluck('keyCode')
+      .scan((prevCode, newCode) => {
+        return Math.abs(prevCode - newCode) === 2 ? prevCode : newCode;
+      })
       .map(keyCode => {
         switch (keyCode) {
           case KEYS.UP:
